@@ -257,8 +257,8 @@ public class EditPanel extends JPanel {
 
         @Override
         public void update(AddOrEdit ops) {
-            if (ops == AddOrEdit.EDIT)
-                resultLbl2.setText("Technician Edited");
+            if (ops == AddOrEdit.EDIT) {
+            }
             else
                 for (Record service : serviceStation.getServices().getList()) {
                     service.attach(this);
