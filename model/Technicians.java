@@ -9,6 +9,7 @@ public class Technicians extends Records {
     public void add(String name, String number, String level) {
         System.out.println("Setup a Technician");
         Technician technicianList = new Technician (++id, name, number, level);
+        System.out.println("hi");
         add(technicianList);
     }
 }
