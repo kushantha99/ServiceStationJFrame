@@ -19,7 +19,7 @@ public class ServiceStationTabbedPaneWindows extends JFrame
 
     private void setup()
     {
-        setSize(500, 500);
+        setSize(900, 700);
         setLocation(200, 200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
