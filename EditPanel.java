@@ -29,9 +29,18 @@ public class EditPanel extends JPanel {
         private JTextField nameTxt = new JTextField(8);
         private JTextField modelTxt = new JTextField(8);
         private JTextField dateTxt = new JTextField(8);
-        private JTextField typeTxt = new JTextField(8);
+        private JRadioButton bodywashRadioBtn = new JRadioButton("Bodywash");
+        private JRadioButton oilChangeRadioBtn = new JRadioButton("Oil Change");
+        private JRadioButton fullServiceRadioBtn = new JRadioButton("Full Service");
+        private JRadioButton bookedRadioBtn = new JRadioButton("Booked");
+        private JRadioButton startedRadioBtn = new JRadioButton("Started");
+        private JRadioButton processingRadioBtn = new JRadioButton("Processing");
+        private JRadioButton finishedRadioBtn = new JRadioButton("Finished");
         private JButton saveServiceBtn = new JButton("Save Service");
         private JLabel resultLbl = new JLabel("-");
+
+        private ButtonGroup serviceTypeButtonGroup = new ButtonGroup();
+        private ButtonGroup statusButtonGroup = new ButtonGroup();
 
         public EditServicePanel(Services services) {
             setup();
@@ -41,8 +50,18 @@ public class EditPanel extends JPanel {
         }
 
         private void setup() {
-            setLayout(new GridLayout(6, 2));
+            setLayout(new GridLayout(15, 1)); // Increase the number of rows
             saveServiceBtn.addActionListener(new SaveBtnListener());
+
+            // Add radio buttons to the button groups
+            serviceTypeButtonGroup.add(bodywashRadioBtn);
+            serviceTypeButtonGroup.add(oilChangeRadioBtn);
+            serviceTypeButtonGroup.add(fullServiceRadioBtn);
+
+            statusButtonGroup.add(bookedRadioBtn);
+            statusButtonGroup.add(startedRadioBtn);
+            statusButtonGroup.add(processingRadioBtn);
+            statusButtonGroup.add(finishedRadioBtn);
         }
 
         private void build() {
@@ -52,7 +71,23 @@ public class EditPanel extends JPanel {
             addPair("Name: ", nameTxt);
             addPair("Model: ", modelTxt);
             addPair("Date: ", dateTxt);
-            addPair("Type: ", typeTxt);
+
+            // Add radio buttons for ServiceType to the panel
+            add(new JLabel("Service Type:"));
+            add(bodywashRadioBtn);
+            add(oilChangeRadioBtn);
+            add(fullServiceRadioBtn);
+
+            // Add space between Service Type and Status
+            add(createSpacePanel(10)); // Adjust the height as needed
+
+            // Add radio buttons for Status to the panel
+            add(new JLabel("Status:"));
+            add(bookedRadioBtn);
+            add(startedRadioBtn);
+            add(processingRadioBtn);
+            add(finishedRadioBtn);
+
             add(saveServiceBtn);
             add(resultLbl);
         }
@@ -69,8 +104,17 @@ public class EditPanel extends JPanel {
                     int id = Integer.parseInt(idTxt.getText());
                     var service = serviceStation.getServices().find(id);
                     if (service != null) {
-                        service.set(nameTxt.getText(), modelTxt.getText(), dateTxt.getText(), ServiceType.FULL_SERVICE,
-                                Status.Booked);
+                        // Get the selected ServiceType and Status from the radio buttons
+                        ServiceType selectedServiceType = getServiceTypeFromRadioButtons();
+                        Status selectedStatus = getStatusFromRadioButtons();
+
+                        service.set(
+                                nameTxt.getText(),
+                                modelTxt.getText(),
+                                dateTxt.getText(),
+                                selectedServiceType,
+                                selectedStatus
+                        );
                         clearFields(); // Clear input fields after successful edit
                     } else {
                         resultLbl.setText("Service with ID " + id + " unavailable!");
@@ -81,12 +125,48 @@ public class EditPanel extends JPanel {
             }
         }
 
+        private ServiceType getServiceTypeFromRadioButtons() {
+            if (bodywashRadioBtn.isSelected()) {
+                return ServiceType.BODYWASH;
+            } else if (oilChangeRadioBtn.isSelected()) {
+                return ServiceType.OIL_CHANGE;
+            } else if (fullServiceRadioBtn.isSelected()) {
+                return ServiceType.FULL_SERVICE;
+            } else {
+                // Default ServiceType if none selected
+                return ServiceType.FULL_SERVICE;
+            }
+        }
+
+        private Status getStatusFromRadioButtons() {
+            if (bookedRadioBtn.isSelected()) {
+                return Status.Booked;
+            } else if (startedRadioBtn.isSelected()) {
+                return Status.Started;
+            } else if (processingRadioBtn.isSelected()) {
+                return Status.Processing;
+            } else if (finishedRadioBtn.isSelected()) {
+                return Status.Finished;
+            } else {
+                // Default Status if none selected
+                return Status.Booked;
+            }
+        }
+
         private void clearFields() {
             idTxt.setText("");
             nameTxt.setText("");
             modelTxt.setText("");
             dateTxt.setText("");
-            typeTxt.setText("");
+            serviceTypeButtonGroup.clearSelection(); // Clear radio button selection for ServiceType
+            statusButtonGroup.clearSelection(); // Clear radio button selection for Status
+        }
+
+        // Helper method to create an empty panel with a specified height
+        private JPanel createSpacePanel(int height) {
+            JPanel spacePanel = new JPanel();
+            spacePanel.setPreferredSize(new Dimension(0, height));
+            return spacePanel;
         }
 
         @Override

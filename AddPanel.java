@@ -26,9 +26,12 @@ public class AddPanel extends JPanel {
         private JTextField nameTxt = new JTextField(8);
         private JTextField modelTxt = new JTextField(8);
         private JTextField dateTxt = new JTextField(8);
-        private JTextField typeTxt = new JTextField(8);
         private JButton ADD = new JButton("ADD");
         private JLabel resultLbl = new JLabel("-");
+        private JRadioButton bodywashRadioButton = new JRadioButton("Bodywash");
+        private JRadioButton oilChangeRadioButton = new JRadioButton("Oil Change");
+        private JRadioButton fullServiceRadioButton = new JRadioButton("Full Service");
+        private ButtonGroup serviceTypeGroup = new ButtonGroup();
 
         public AddServicePanel(Services services) {
             this.services = services;
@@ -38,17 +41,32 @@ public class AddPanel extends JPanel {
         }
 
         private void setup() {
-            setLayout(new GridLayout(6, 2));
+            setLayout(new GridLayout(9, 2)); // Updated rows to accommodate radio buttons
+
+            // Group the radio buttons
+            serviceTypeGroup.add(bodywashRadioButton);
+            serviceTypeGroup.add(oilChangeRadioButton);
+            serviceTypeGroup.add(fullServiceRadioButton);
+
             ADD.addActionListener(new ADD());
         }
 
         private void build() {
             add(new JLabel("Add Service"));
             add(Box.createHorizontalStrut(0));
+
             addPair("name : ", nameTxt);
             addPair("model : ", modelTxt);
             addPair("date : ", dateTxt);
-            addPair("type : ", typeTxt);
+
+            // Add radio buttons
+            add(new JLabel("type : "));
+            add(bodywashRadioButton);
+            add(new JLabel(""));
+            add(oilChangeRadioButton);
+            add(new JLabel(""));
+            add(fullServiceRadioButton);
+
             add(ADD);
             add(resultLbl);
         }
@@ -61,9 +79,21 @@ public class AddPanel extends JPanel {
         private class ADD implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                services.add(nameTxt.getText(), modelTxt.getText(), dateTxt.getText(), ServiceType.FULL_SERVICE,
-                        Status.Booked);
+                ServiceType selectedServiceType = getServiceType();
+                services.add(nameTxt.getText(), modelTxt.getText(), dateTxt.getText(), selectedServiceType, Status.Booked);
+            }
+        }
 
+        private ServiceType getServiceType() {
+            if (bodywashRadioButton.isSelected()) {
+                return ServiceType.BODYWASH;
+            } else if (oilChangeRadioButton.isSelected()) {
+                return ServiceType.OIL_CHANGE;
+            } else if (fullServiceRadioButton.isSelected()) {
+                return ServiceType.FULL_SERVICE;
+            } else {
+                // Default to FULL_SERVICE if no radio button is selected
+                return ServiceType.FULL_SERVICE;
             }
         }
 
@@ -118,7 +148,6 @@ public class AddPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 technicians.add(nameTxt.getText(), numberTxt.getText(), levelTxt.getText());
-
             }
         }
 
@@ -132,5 +161,16 @@ public class AddPanel extends JPanel {
             if (ops == AddOrEdit.ADD)
                 resultLbl.setText("Technician Added");
         }
+    }
+
+    public static void main(String[] args) {
+        // Sample usage
+        ServiceStation serviceStation = new ServiceStation();
+        JFrame frame = new JFrame("AddPanel Demo");
+        AddPanel addPanel = new AddPanel(serviceStation);
+        frame.getContentPane().add(addPanel);
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 }
