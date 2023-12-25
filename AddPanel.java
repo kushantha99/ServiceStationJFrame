@@ -13,15 +13,15 @@ public class AddPanel extends JPanel {
     }
 
     private void setup() {
-        setLayout(new GridLayout(3, 1)); // r, c
+        setLayout(new GridLayout(3, 1));
     }
 
     private void build() {
         add(new AddServicePanel(serviceStation.getServices()));
+        add(new AddTechnicianPanel(serviceStation.getTechnicians()));
     }
 
-    // movies
-    public class AddServicePanel extends JPanel implements MyObserver{
+    public class AddServicePanel extends JPanel implements MyObserver {
         private Services services;
         private JTextField nameTxt = new JTextField(8);
         private JTextField modelTxt = new JTextField(8);
@@ -38,7 +38,7 @@ public class AddPanel extends JPanel {
         }
 
         private void setup() {
-            setLayout(new GridLayout(4, 2)); // r, c
+            setLayout(new GridLayout(6, 2));
             ADD.addActionListener(new ADD());
         }
 
@@ -58,12 +58,12 @@ public class AddPanel extends JPanel {
             add(txt);
         }
 
-        private class ADD implements ActionListener
-        {
+        private class ADD implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                services.add(nameTxt.getText(), modelTxt.getText(), dateTxt.getText(), ServiceType.FULL_SERVICE, Status.Booked);
-                
+                services.add(nameTxt.getText(), modelTxt.getText(), dateTxt.getText(), ServiceType.FULL_SERVICE,
+                        Status.Booked);
+
             }
         }
 
@@ -76,10 +76,10 @@ public class AddPanel extends JPanel {
         public void update(AddOrEdit ops) {
             if (ops == AddOrEdit.ADD)
                 resultLbl.setText("Service Added");
-        } 
+        }
     }
 
-    public class AddTechnicianPanel extends JPanel implements MyObserver{
+    public class AddTechnicianPanel extends JPanel implements MyObserver {
         private Technicians technicians;
         private JTextField nameTxt = new JTextField(8);
         private JTextField numberTxt = new JTextField(8);
@@ -95,7 +95,7 @@ public class AddPanel extends JPanel {
         }
 
         private void setup() {
-            setLayout(new GridLayout(4, 2)); // r, c
+            setLayout(new GridLayout(5, 2)); // 5 rows, 2 columns
             ADD.addActionListener(new ADD());
         }
 
@@ -114,8 +114,7 @@ public class AddPanel extends JPanel {
             add(txt);
         }
 
-        private class ADD implements ActionListener
-        {
+        private class ADD implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 technicians.add(nameTxt.getText(), numberTxt.getText(), levelTxt.getText());
@@ -134,6 +133,4 @@ public class AddPanel extends JPanel {
                 resultLbl.setText("Technician Added");
         }
     }
-
-    // theatres
 }

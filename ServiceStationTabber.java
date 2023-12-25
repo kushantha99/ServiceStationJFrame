@@ -23,7 +23,14 @@ public class ServiceStationTabber extends JTabbedPane
 
     private void build()
     {
-        add("Add", new AddPanel(serviceStation));
+       ;
+
+
+//        addTabs.addtab("Services",addTab);
+//        addPanel.add(addTabs);
+//        add("Add", addPanel);
+
+        add("ADD",new AddPanel(serviceStation));
         add("Edit", new EditPanel(serviceStation));
         add("Report", new ReportPanel(serviceStation));
     }

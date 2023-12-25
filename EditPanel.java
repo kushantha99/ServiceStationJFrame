@@ -5,11 +5,10 @@ import java.awt.event.*;
 import model.*;
 import model.Record;
 
-public class EditPanel extends JPanel
-{
+public class EditPanel extends JPanel {
     private ServiceStation serviceStation;
-    public EditPanel(ServiceStation serviceStation)
-    {   
+
+    public EditPanel(ServiceStation serviceStation) {
         this.serviceStation = serviceStation;
         setup();
         build();
@@ -21,11 +20,11 @@ public class EditPanel extends JPanel
 
     private void build() {
         add(new EditServicePanel(serviceStation.getServices()));
+        add(new EditTechnicianPanel(serviceStation.getTechnicians()));
     }
 
-    // movies
-    public class EditServicePanel extends JPanel implements MyObserver{
-      
+    public class EditServicePanel extends JPanel implements MyObserver {
+
         private JTextField idTxt = new JTextField(8);
         private JTextField nameTxt = new JTextField(8);
         private JTextField modelTxt = new JTextField(8);
@@ -35,27 +34,25 @@ public class EditPanel extends JPanel
         private JLabel resultLbl = new JLabel("-");
 
         public EditServicePanel(Services services) {
-            
             setup();
             build();
-
             serviceStation.attach(this);
-            serviceStation.getServices().attach(this);
+            services.attach(this);
         }
 
         private void setup() {
-            setLayout(new GridLayout(5, 2)); // r, c
+            setLayout(new GridLayout(6, 2));
             saveServiceBtn.addActionListener(new SaveBtnListener());
         }
 
         private void build() {
             add(new JLabel("Edit Services"));
             add(Box.createHorizontalStrut(0));
-            addPair("id : ", idTxt);
-            addPair("name : ", nameTxt);
-            addPair("model : ", modelTxt);
-            addPair("date : ", dateTxt);
-            addPair("type : ", typeTxt);
+            addPair("ID: ", idTxt);
+            addPair("Name: ", nameTxt);
+            addPair("Model: ", modelTxt);
+            addPair("Date: ", dateTxt);
+            addPair("Type: ", typeTxt);
             add(saveServiceBtn);
             add(resultLbl);
         }
@@ -65,20 +62,31 @@ public class EditPanel extends JPanel
             add(txt);
         }
 
-        private class SaveBtnListener implements ActionListener
-        {
+        private class SaveBtnListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                var service = serviceStation.getServices().find(Integer.parseInt(idTxt.getText()));
-                if (service != null)
-                {
-                    service.set(nameTxt.getText(), modelTxt.getText(), dateTxt.getText(), ServiceType.FULL_SERVICE, Status.Booked );
-                }
-                else
-                {
-                    resultLbl.setText("Service with ID" + idTxt.getText() + " unavailable!");
+                try {
+                    int id = Integer.parseInt(idTxt.getText());
+                    var service = serviceStation.getServices().find(id);
+                    if (service != null) {
+                        service.set(nameTxt.getText(), modelTxt.getText(), dateTxt.getText(), ServiceType.FULL_SERVICE,
+                                Status.Booked);
+                        clearFields(); // Clear input fields after successful edit
+                    } else {
+                        resultLbl.setText("Service with ID " + id + " unavailable!");
+                    }
+                } catch (NumberFormatException ex) {
+                    resultLbl.setText("Invalid ID format");
                 }
             }
+        }
+
+        private void clearFields() {
+            idTxt.setText("");
+            nameTxt.setText("");
+            modelTxt.setText("");
+            dateTxt.setText("");
+            typeTxt.setText("");
         }
 
         @Override
@@ -94,39 +102,37 @@ public class EditPanel extends JPanel
                 for (Record service : serviceStation.getServices().getList()) {
                     service.attach(this);
                 }
-        } 
+        }
     }
 
-    public class EditTechnicianPanel extends JPanel implements MyObserver{
+    public class EditTechnicianPanel extends JPanel implements MyObserver {
 
         private JTextField idTxt = new JTextField(8);
         private JTextField nameTxt = new JTextField(8);
         private JTextField numberTxt = new JTextField(8);
-        private JTextField levelTxt = new JTextField(8);;
+        private JTextField levelTxt = new JTextField(8);
         private JButton saveTechnicianBtn = new JButton("Save Technician");
         private JLabel resultLbl = new JLabel("-");
 
         public EditTechnicianPanel(Technicians technicians) {
-
             setup();
             build();
-
             serviceStation.attach(this);
             serviceStation.getTechnicians().attach(this);
         }
 
         private void setup() {
-            setLayout(new GridLayout(5, 2)); // r, c
+            setLayout(new GridLayout(6, 2));
             saveTechnicianBtn.addActionListener(new SaveBtnListener());
         }
 
         private void build() {
             add(new JLabel("Edit Technician"));
             add(Box.createHorizontalStrut(0));
-            addPair("id : ", idTxt);
-            addPair("name : ", nameTxt);
-            addPair("number : ", numberTxt);
-            addPair("level : ", levelTxt);
+            addPair("ID: ", idTxt);
+            addPair("Name: ", nameTxt);
+            addPair("Number: ", numberTxt);
+            addPair("Level: ", levelTxt);
             add(saveTechnicianBtn);
             add(resultLbl);
         }
@@ -136,20 +142,29 @@ public class EditPanel extends JPanel
             add(txt);
         }
 
-        private class SaveBtnListener implements ActionListener
-        {
+        private class SaveBtnListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                var technician = serviceStation.getTechnicians().find(Integer.parseInt(idTxt.getText()));
-                if (technician != null)
-                {
-                    technician.set(nameTxt.getText(), numberTxt.getText(), levelTxt.getText());
-                }
-                else
-                {
-                    resultLbl.setText("Technician with ID" + idTxt.getText() + " unavailable!");
+                try {
+                    int id = Integer.parseInt(idTxt.getText());
+                    var technician = serviceStation.getTechnicians().find(id);
+                    if (technician != null) {
+                        technician.set(nameTxt.getText(), numberTxt.getText(), levelTxt.getText());
+                        clearFields(); // Clear input fields after successful edit
+                    } else {
+                        resultLbl.setText("Technician with ID " + id + " unavailable!");
+                    }
+                } catch (NumberFormatException ex) {
+                    resultLbl.setText("Invalid ID format");
                 }
             }
+        }
+
+        private void clearFields() {
+            idTxt.setText("");
+            nameTxt.setText("");
+            numberTxt.setText("");
+            levelTxt.setText("");
         }
 
         @Override
@@ -167,6 +182,4 @@ public class EditPanel extends JPanel
                 }
         }
     }
-
-    // theatres
 }
