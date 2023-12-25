@@ -115,7 +115,8 @@ public class EditPanel extends JPanel {
                                 selectedServiceType,
                                 selectedStatus
                         );
-                        clearFields(); // Clear input fields after successful edit
+                        clearFields();
+                        resultLbl.setText("Service with ID " + id + " successfully edited");
                     } else {
                         resultLbl.setText("Service with ID " + id + " unavailable!");
                     }
@@ -171,7 +172,7 @@ public class EditPanel extends JPanel {
 
         @Override
         public void update() {
-            resultLbl.setText("Service Edited");
+
         }
 
         @Override
@@ -192,7 +193,8 @@ public class EditPanel extends JPanel {
         private JTextField numberTxt = new JTextField(8);
         private JTextField levelTxt = new JTextField(8);
         private JButton saveTechnicianBtn = new JButton("Save Technician");
-        private JLabel resultLbl = new JLabel("-");
+//        private JLabel resultLbl = new JLabel("-");
+        private JLabel resultLbl2 = new JLabel("-");
 
         public EditTechnicianPanel(Technicians technicians) {
             setup();
@@ -214,7 +216,7 @@ public class EditPanel extends JPanel {
             addPair("Number: ", numberTxt);
             addPair("Level: ", levelTxt);
             add(saveTechnicianBtn);
-            add(resultLbl);
+            add(resultLbl2);
         }
 
         private void addPair(String lbl, JTextField txt) {
@@ -230,12 +232,13 @@ public class EditPanel extends JPanel {
                     var technician = serviceStation.getTechnicians().find(id);
                     if (technician != null) {
                         technician.set(nameTxt.getText(), numberTxt.getText(), levelTxt.getText());
-                        clearFields(); // Clear input fields after successful edit
+                        clearFields();
+                        resultLbl2.setText("Technician with ID " + id + " successfully edited");
                     } else {
-                        resultLbl.setText("Technician with ID " + id + " unavailable!");
+                        resultLbl2.setText("Technician with ID " + id + " unavailable!");
                     }
                 } catch (NumberFormatException ex) {
-                    resultLbl.setText("Invalid ID format");
+                    resultLbl2.setText("Invalid ID format");
                 }
             }
         }
@@ -249,13 +252,13 @@ public class EditPanel extends JPanel {
 
         @Override
         public void update() {
-            resultLbl.setText("Technician Edited");
+
         }
 
         @Override
         public void update(AddOrEdit ops) {
             if (ops == AddOrEdit.EDIT)
-                resultLbl.setText("Technician Edited");
+                resultLbl2.setText("Technician Edited");
             else
                 for (Record service : serviceStation.getServices().getList()) {
                     service.attach(this);
